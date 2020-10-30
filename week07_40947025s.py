@@ -43,17 +43,33 @@ def text2cws(DocuPath , STR):
     
     for j in allFileList:
         jsonFileText = jsonTextReader(DocuPath + j)[STR]
-        jsonFileList.append(text2Sentence(jsonFileText))
-    print("jsonFileList:")
-    print(jsonFileList)
+        text2SentenceList = text2Sentence(jsonFileText)
+        for k in text2SentenceList:
+            jsonFileList.append(k)
+    #print("jsonFileList:")
+    #print(type(jsonFileList))
+    #print(jsonFileList)
     
     #jieba斷句
-    print("jiebaList:")
+    #print("jiebaList:")
     for i in jsonFileList:
-        jiebaList.append('/'.join(jieba.cut(i)))
+        #print(type(i))
+        #print(i)        
+        jiebaList.append(jieba.cut(i))
     
-    print(jiebaList)
+    return jiebaList
 
+#計算字/詞頻率
+def termFreq(jiebaList):
+    resultDICT = {}
+    for i in jiebaList:
+        for j in i:
+            if resultDICT.get(j) == None :
+                resultDICT[j] = 1
+            else :
+                resultDICT[j] = resultDICT[j] + 1
+            
+    return resultDICT
 
 
 if __name__== "__main__":
@@ -61,31 +77,5 @@ if __name__== "__main__":
     docuTuple = ("finance/" , "health/")
     FilePath = "./example/"
     for i in docuTuple:
-        text2cws(FilePath + i, "BODY")
+        print(termFreq(text2cws(FilePath + i, "BODY")))
         
-            #print(jsonFileText)
-
-""""
-    #將 news.json 利用 [讀取 json] 的程式打開
-    jsonFileText = jsonTextReader(jsonFilePath)["text"]
-    #print("1: " + jsonFileText)
-    #將讀出來的內容字串傳給 [將字串轉為「句子」 列表」]的程式，存為 newsLIST
-    newsLIST = {"sentence" : text2Sentence(jsonFileText)}
-    
-    
-    #設定要讀取的 test.json 路徑
-
-
-    #將 test.json 的 sentenceLIST 內容讀出，存為 testLIST
-    jsonFilePath = "./example/test.json"
-    testLIST = jsonTextReader(jsonFilePath)
-    
-    
-    #測試是否達到作業需求
-    #print(newsLIST)
-    #print(testLIST)
-    if newsLIST == testLIST:
-        print("作業過關！")
-    else:
-        print("作業不過關，請回到上面修改或是貼文求助！")
-"""
